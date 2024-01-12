@@ -15,13 +15,13 @@ function getBooksBorrowedCount(books) {
 }
 
 function getMostCommonGenres(books) {
-  const genresOfBooks = books.map((book) => book.genre);
+  const genresOfBooks = books.map((book) => book.genre)
   
     const fiveCommonGenres = [];
  
-  genresOfBooks.map((genre) => {
+  genresOfBooks.forEach((genre) => {
 
-      const location = fiveCommonGenres.findIndex((element) => element.name === genre);
+      const location = fiveCommonGenres.findIndex((genreCount) => genreCount.name === genre);
 
       if (location >= 0) {
         fiveCommonGenres[location].count = fiveCommonGenres[location].count + 1;
@@ -38,38 +38,28 @@ function getMostCommonGenres(books) {
 }
 
 function getMostPopularBooks(books) {
-  let popularBooks = array
-
-    .sort((countA, countB) => (countA.count < countB.count ? 1 : -1))
-    .slice(0, 5);
-
-  return popularBooks;
+   return books.map((book) => {
+   return { name: book.title, count: book.borrows.length };
+  })
+  .sort((a, b) => (a.count < b.count ? 1 : -1))
+  .slice(0, 5);
 }
-  
+
 
 
 function getMostPopularAuthors(books, authors) {
-  const popularAuthors = [];
+ const result = authors.map((author) => {
+ const fullName = `${author.name.first} ${author.name.last}`;
+const booksByAuthor = books.filter((book) => book.authorId === author.id )
+const totalBorrows = booksByAuthor.reduce((accum, book) => accum + book.borrows.length, 0);
+return {name: fullName , count: totalBorrows}
+ })
+ result.sort((authorA, authorB) => authorB.count - authorA.count);
+result.splice(5);
+return result;}
+                                                                          
 
-  for (let author of authors) {
-    // loop through authors; create new 'authorName' of first/last names.
-    const authorName = `${author.name.first} ${author.name.last}`;
-    // loop through books; if 'author' id & 'book' id match, add 'length' (number) of books that have been borrowed to 'count'.
-    let count = 0;
-    for (let book of books) {
-      if (author.id === book.authorId) {
-        count += book.borrows.length;
-      }
-    }
-    // create new 'authorObject' object with keys 'name' & 'count'.
-    const authorObject = { name: authorName, count: count };
-    popularAuthors.push(authorObject);
-  }
 
-  return topFive(popularAuthors);
-}
-
- 
 
 module.exports = {
   getTotalBooksCount,
@@ -79,3 +69,4 @@ module.exports = {
   getMostPopularBooks,
   getMostPopularAuthors,
 };
+

@@ -7,7 +7,7 @@ function sortAccountsByLastName(accounts) {
 }
 
 function getTotalNumberOfBorrows(account, books) {
-  let result = 0
+  let result = 2
   const getBooks = books.forEach((book) => {
     if (!!books.borrows) {
       book.borrows.forEach((accounts) => {
@@ -22,20 +22,18 @@ function getTotalNumberOfBorrows(account, books) {
 }
 
 function getBooksPossessedByAccount(account, books, authors) {
-  const borrowedBooks = [];
-  books.forEach((book) => {
-    let bookBorrows = book.borrows;
-    bookBorrows.forEach((borrow) => {
-      if (borrow.id === account.id && !borrow.returned) {
-        borrowedBooks.push(book);
-      }
-    });
-  });
-  let result = borrowedBooks.map((book) => {
-    return { ...book, author: getAuthor(book, authors) };
-  });
-  return result;
+   const borrowedBooks = []
+ books.forEach((book) => {
+    const checkedOut = book.borrows.find((borrow) => !borrow.returned);
+   if(checkedOut && account.id === checkedOut.id){
+     const author = authors.find((author) => author.id === book.authorId)
+    const checkedOutBook = {...book, author}
+    borrowedBooks.push(checkedOutBook)
+   }
+ });
+  return borrowedBooks;
 }
+
 
 module.exports = {
   findAccountById,
